@@ -2,7 +2,7 @@
 
 Great Kingdom Come: Deliverance mod forked from https://github.com/pryans/kcd-cheat
 
-[https://www.nexusmods.com/kingdomcomedeliverance/mods/106](Mod page at nexusmods.com)
+[Mod page at nexusmods.com](https://www.nexusmods.com/kingdomcomedeliverance/mods/106)
 
 ## Create new release
 
