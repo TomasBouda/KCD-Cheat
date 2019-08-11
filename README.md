@@ -1,8 +1,12 @@
-# kcd-cheat
-KCD Cheat Mod: https://www.nexusmods.com/kingdomcomedeliverance/mods/106
+# KCD-Cheat
 
+Great Kingdom Come: Deliverance mod forked from https://github.com/pryans/kcd-cheat
+
+[https://www.nexusmods.com/kingdomcomedeliverance/mods/106](Mod page at nexusmods.com)
 
 ## Create new release
+
+*TODO: wersion for windows*
 
 1. Edit ./Source/Scripts/Startup/main.lua and set major + minor version number
 
