@@ -64,9 +64,9 @@ function cheat:find_npc(name, range)
 end
 
 -- ============================================================================
--- get_npc_spawn_point
+-- get_npc_randowm_spawn_point
 -- ============================================================================
-function cheat:get_npc_spawn_point(isPlayerPosition,xPos,yPos,zPos,radius)
+function cheat:get_npc_randowm_spawn_point(isPlayerPosition,xPos,yPos,zPos,radius)
   if not radius or radius == 0 then
     radius = 5
   end
@@ -83,6 +83,20 @@ function cheat:get_npc_spawn_point(isPlayerPosition,xPos,yPos,zPos,radius)
       return {x=spawnX, y=spawnY, z=zPos}
     end
   end
+end
+
+function cheat:get_npc_direct_spawn_point(xPos,yPos,zPos,xDir,yDir,distance)
+	if not distance or distance < 0 then
+		distance = 1
+	end
+
+	local spawnX = xPos + (xDir * distance)
+	local spawnY = yPos + (yDir * distance)
+	local spawnZ = zPos+1
+
+	cheat:logDebug("spawnPos: %s, %s, %s", spawnX, spawnY, spawnZ)
+
+	return {x=spawnX, y=spawnY, z=spawnZ}
 end
 
 -- ============================================================================
@@ -176,7 +190,7 @@ function cheat:cheat_teleport_npc_to_loc(line)
       for i,npc in ipairs(npcs) do
         if spawnCount < max then
           local npcName = cheat:get_npc_name(npc)
-          npc:SetWorldPos(cheat:get_npc_spawn_point(false, x, y, z, radius));
+          npc:SetWorldPos(cheat:get_npc_randowm_spawn_point(false, x, y, z, radius));
           spawnCount = spawnCount + 1
           cheat:logInfo("Teleported NPC [%s] to position x=%d y=%d z=%d",
               npcName,
@@ -217,7 +231,7 @@ function cheat:cheat_teleport_npc_to_player(line)
       for i,npc in ipairs(npcs) do
         if spawnCount < max then
           local npcName = cheat:get_npc_name(npc)
-          npc:SetWorldPos(cheat:get_npc_spawn_point(true, playerPosition.x, playerPosition.y, playerPosition.z, radius));
+          npc:SetWorldPos(cheat:get_npc_randowm_spawn_point(true, playerPosition.x, playerPosition.y, playerPosition.z, radius));
           spawnCount = spawnCount + 1
           cheat:logInfo("Teleported NPC [%s] to position x=%d y=%d z=%d",
               npcName,
@@ -273,7 +287,7 @@ function cheat:cheat_kill_target()
   if cheat.entity_target then
     if cheat.entity_target.soul then
       cheat.entity_target.soul:DealDamage(9999,9999)
-      cheat:logInof("Entity killed.")
+      cheat:logInfo("Entity killed.")
     else
       cheat:logError("Targeted entity has no soul, can't kill it.")
     end
@@ -365,14 +379,16 @@ function cheat:cheat_spawn_entity(entityName, entityClass, entitySoul, entityPos
   end
 
   if not entityPos then
-    local playerPosition = player:GetWorldPos();
-    entityPos = cheat:get_npc_spawn_point(true, playerPosition.x, playerPosition.y, playerPosition.z, 5)
+    local playerPosition = player:GetWorldPos()
+    entityPos = cheat:get_npc_randowm_spawn_point(true, playerPosition.x, playerPosition.y, playerPosition.z, 5)
   end
 
   if not entityDir then
-    entityDir = player:GetWorldPos();
+    entityDir = player:GetWorldDir()
   end
   
+  cheat:logDebug("Spawning entity %s, class: %s, id:%s at [%s;%s;%s] dir:[%s;%s]", entityName, entityClass, entitySoul, entityPos.x, entityPos.y, entityPos.z, entityDir.x, entityDir.y)
+
   local spawnParams = {}
   spawnParams.class = entityClass
   spawnParams.position = entityPos
@@ -405,7 +421,7 @@ cheat.cheat_spawn_args = {
 }
 cheat:createCommand("cheat_spawn", "cheat:cheat_spawn(%line)", cheat.cheat_spawn_args,
   "Spawns bandits, cuman, or animals.\n$8"..
-  "For some reason most of the animals and some bandits/cuman just stand around. No idea why.\n$8"..
+  "If npc is'n moving it has some missing parameters. See Tables.pak\\rpg\\soul2role.xml,v_soul2role_metarole.xml,soul2hobby.xml,... .\n$8"..
   "The spawned entities are not managed so you should kill them off or load a clean save.",
   "Spawn 10 bandits", "cheat_spawn class:bandit count:10")
 function cheat:cheat_spawn(line)
@@ -420,67 +436,67 @@ function cheat:cheat_spawn(line)
     local key = cheat:toUpper(class)
     if key == "HARE" then
       for i=0,count do
-        local entityPos = cheat:get_npc_spawn_point(true, playerPosition.x, playerPosition.y, playerPosition.z, radius)
+        local entityPos = cheat:get_npc_randowm_spawn_point(true, playerPosition.x, playerPosition.y, playerPosition.z, radius)
         cheat:cheat_spawn_entity(nil, "Hare", "4d9275e7-744b-2390-1e8d-943e0f2501a4", entityPos, nil)
       end
     elseif key == "HORSE" then
       for i=0,count do
-        local entityPos = cheat:get_npc_spawn_point(true, playerPosition.x, playerPosition.y, playerPosition.z, radius)
+        local entityPos = cheat:get_npc_randowm_spawn_point(true, playerPosition.x, playerPosition.y, playerPosition.z, radius)
         cheat:cheat_spawn_entity(nil, "Horse", "4669b957-cd91-b597-2f2a-977ba81d1c80", entityPos, nil)
       end
     elseif key == "BOAR" then
       for i=0,count do
-        local entityPos = cheat:get_npc_spawn_point(true, playerPosition.x, playerPosition.y, playerPosition.z, radius)
+        local entityPos = cheat:get_npc_randowm_spawn_point(true, playerPosition.x, playerPosition.y, playerPosition.z, radius)
         cheat:cheat_spawn_entity(nil, "Boar", "4ba0a861-869f-30e3-941b-aa3872f1c6a3", entityPos, nil)
       end
     elseif key == "SHEEP" then
       for i=0,count do
-        local entityPos = cheat:get_npc_spawn_point(true, playerPosition.x, playerPosition.y, playerPosition.z, radius)
+        local entityPos = cheat:get_npc_randowm_spawn_point(true, playerPosition.x, playerPosition.y, playerPosition.z, radius)
         cheat:cheat_spawn_entity(nil, "Sheep", "43049911-d3fe-9315-b963-fb4ecc601d8f", entityPos, nil)
       end
     elseif key == "PIG" then
       for i=0,count do
-        local entityPos = cheat:get_npc_spawn_point(true, playerPosition.x, playerPosition.y, playerPosition.z, radius)
+        local entityPos = cheat:get_npc_randowm_spawn_point(true, playerPosition.x, playerPosition.y, playerPosition.z, radius)
         cheat:cheat_spawn_entity(nil, "Pig", "400d68c1-ab31-864a-bf3f-557fcc5922a8", entityPos, nil)
       end
     elseif key == "COW" then
       for i=0,count do
-        local entityPos = cheat:get_npc_spawn_point(true, playerPosition.x, playerPosition.y, playerPosition.z, radius)
+        local entityPos = cheat:get_npc_randowm_spawn_point(true, playerPosition.x, playerPosition.y, playerPosition.z, radius)
         cheat:cheat_spawn_entity(nil, "Cow", "47991ed1-84fd-6233-0f27-046e5db1698b", entityPos, nil)
       end
     elseif key == "BUCK" then
       for i=0,count do
-        local entityPos = cheat:get_npc_spawn_point(true, playerPosition.x, playerPosition.y, playerPosition.z, radius)
+        local entityPos = cheat:get_npc_randowm_spawn_point(true, playerPosition.x, playerPosition.y, playerPosition.z, radius)
         cheat:cheat_spawn_entity(nil, "RoeBuck", "41f5c883-299d-645f-5a42-92db0d6c6c91", entityPos, nil)
       end
     elseif key == "DOE" then
       for i=0,count do
-        local entityPos = cheat:get_npc_spawn_point(true, playerPosition.x, playerPosition.y, playerPosition.z, radius)
+        local entityPos = cheat:get_npc_randowm_spawn_point(true, playerPosition.x, playerPosition.y, playerPosition.z, radius)
         cheat:cheat_spawn_entity(nil, "DeerDoe", "4eca3014-efa1-e85e-414d-c454aaed1baf", entityPos, nil)
       end
     elseif key == "REDDEER" then
       for i=0,count do
-        local entityPos = cheat:get_npc_spawn_point(true, playerPosition.x, playerPosition.y, playerPosition.z, radius)
+        local entityPos = cheat:get_npc_randowm_spawn_point(true, playerPosition.x, playerPosition.y, playerPosition.z, radius)
         cheat:cheat_spawn_entity(nil, "RedDeer", "4edc5ad5-51be-0cd2-be9d-6ead0aabcf88", entityPos, nil)
       end
     elseif key == "BANDIT" then
       local souls = cheat:find_soul("bandit", true)
       for i=1,count do
-        local entityPos = cheat:get_npc_spawn_point(true, playerPosition.x, playerPosition.y, playerPosition.z, radius)
+        local entityPos = cheat:get_npc_randowm_spawn_point(true, playerPosition.x, playerPosition.y, playerPosition.z, radius)
         local soul_id = souls[math.random(1,#souls)].soul_id
         cheat:cheat_spawn_entity(nil, "NPC", soul_id, entityPos, nil)
       end
     elseif key == "CUMAN" then
       local souls = cheat:find_soul("cuman", true)
       for i=1,count do
-        local entityPos = cheat:get_npc_spawn_point(true, playerPosition.x, playerPosition.y, playerPosition.z, radius)
+        local entityPos = cheat:get_npc_randowm_spawn_point(true, playerPosition.x, playerPosition.y, playerPosition.z, radius)
         local soul_id = souls[math.random(1,#souls)].soul_id
         cheat:cheat_spawn_entity(nil, "NPC", soul_id, entityPos, nil)
       end
     elseif key == "GUARD" then
       local souls = cheat:find_soul("guard", true)
       for i=1,count do
-        local entityPos = cheat:get_npc_spawn_point(true, playerPosition.x, playerPosition.y, playerPosition.z, radius)
+        local entityPos = cheat:get_npc_randowm_spawn_point(true, playerPosition.x, playerPosition.y, playerPosition.z, radius)
         local soul_id = souls[math.random(1,#souls)].soul_id
         cheat:cheat_spawn_entity(nil, "NPC", soul_id, entityPos, nil)
       end
@@ -492,12 +508,15 @@ end
 -- cheat_spawn_npc
 -- ============================================================================
 cheat.cheat_spawn_npc_args = {
-  token=function(args,name,showHelp) return cheat:argsGetRequired(args, name, showHelp, "The sould ID, all/part of the soul name, or all/part of localized soul name.") end
+  token=function(args,name,showHelp) return cheat:argsGetRequired(args, name, showHelp, "The sould ID, all/part of the soul name, or all/part of localized soul name.") end,
+  distance=function(args,name,showHelp) return cheat:argsGetOptionalNumber(args, name, 1, showHelp, "Distance(from player) at which NPC will be spawned. Default 1.") end,
+  count=function(args,name,showHelp) return cheat:argsGetOptionalNumber(args, name, 1, showHelp, "Number of NPCs to spawn. Default 1.") end
 }
 cheat:createCommand("cheat_spawn_npc", "cheat:cheat_spawn_npc(%line)", cheat.cheat_spawn_npc_args,
   "Searches through the database of souls and spawns 1 NPC for each match.\n$8"..
   "This is intended to be used to spawn specific NPCs.\n$8"..
   "The list of souls is in v_soul_character_data.xml in tables.pak.",
+  "The list of souls ids is in soul.xml in tables.pak.",
   "Spawn Olena by name (spawns 2 NPCs, 1 is invisible)", "cheat_spawn_npc token:olena",
   "Spawn all NPCs with 'father' in their name", "cheat_spawn_npc token:father",
   "Spawn by soul ID", "cheat_spawn_npc token:4d69f4f4-6b78-7b1f-5a61-8fa8045b7aac",
@@ -505,21 +524,28 @@ cheat:createCommand("cheat_spawn_npc", "cheat:cheat_spawn_npc(%line)", cheat.che
 function cheat:cheat_spawn_npc(line)
   local args = cheat:argsProcess(line, cheat.cheat_spawn_npc_args)
   local token, tokenErr = cheat:argsGet(args, 'token', nil)
+--   local tokens, tokensErr = cheat:argsGet(args, 'tokens', nil)
+  local distance, distanceErr = cheat:argsGet(args, 'distance', nil)
+  local count, countErr = cheat:argsGet(args, 'count', nil)
+
   if not tokenErr then
-    local souls = cheat:find_soul(token, true)
-    if #souls > 0 then
-      for i,soul in ipairs(souls) do
-        cheat:cheat_spawn_entity(nil, "NPC", soul.soul_id, nil, nil)
-      end
-    else
-      cheat:logError("Soul [%s] not found.", soul)
-    end
+	local souls = cheat:find_soul(token, true)
+	if #souls == 1 then
+		local playerPosition = player:GetWorldPos()
+		local playerDirection = player:GetWorldDir()
+		local entityPos = cheat:get_npc_direct_spawn_point(playerPosition.x, playerPosition.y, playerPosition.z, playerDirection.x, playerDirection.y, distance)
+		for i=1,count do
+			cheat:cheat_spawn_entity(nil, "NPC", souls[1].soul_id, entityPos, playerDirection)
+		end
+	elseif #souls > 1 then
+		for i,soul in ipairs(souls) do
+			cheat:cheat_spawn_entity(nil, "NPC", soul.soul_id, nil, nil)	
+		end
+	else
+	cheat:logError("Soul [%s] not found.", soul)
+	end
   end
 end
-
-
-
-
 
 --[[
 
