@@ -1,4 +1,4 @@
-$VERSION = '1.4'
+$VERSION = '1.32'
 $targetDir = "C:\Program Files (x86)\Steam\steamapps\common\KingdomComeDeliverance\mods\Cheat\"
 $srcDir = "$PSScriptRoot\Source"
 

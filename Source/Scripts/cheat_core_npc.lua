@@ -86,7 +86,7 @@ function cheat:get_npc_randowm_spawn_point(isPlayerPosition,xPos,yPos,zPos,radiu
 end
 
 function cheat:get_npc_direct_spawn_point(xPos,yPos,zPos,xDir,yDir,distance)
-	if not distance or distance < 0 then
+	if not distance or distance == 0 then
 		distance = 1
 	end
 

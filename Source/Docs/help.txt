@@ -451,9 +451,9 @@ You can end up in the air or under the map.
 I suggest saving your game and turn on immortality first.
 
 [b]Arguments:[/b]
-	z: (required number) Z coordinate
 	y: (required number) Y coordinate
 	x: (required number) X coordinate
+	z: (required number) Z coordinate
 
 [b]Examples:[/b]
 	Example:
@@ -498,8 +498,8 @@ Sets one of the player's states to the given value.
 Adds XP to one of the player's stats.
 
 [b]Arguments:[/b]
-	xp: (required number) The desired XP to add.
 	stat: (required) One of: str, agi, vit, or spc.
+	xp: (required number) The desired XP to add.
 
 [b]Examples:[/b]
 	Add 100 XP to player's strength stat:
@@ -511,8 +511,8 @@ Adds XP to one of the player's stats.
 Sets one of the player's stats to the given level.
 
 [b]Arguments:[/b]
-	level: (required number) The desired level for the given stat (max 20). Level cannot lowered.
 	stat: (required) One of: str, agi, vit, or spc.
+	level: (required number) The desired level for the given stat (max 20). Level cannot lowered.
 
 [b]Examples:[/b]
 	Set player's strength to level 20:
@@ -592,9 +592,9 @@ Let me know.
 Regenerates the given player state over time; pulses once per second.
 
 [b]Arguments:[/b]
-	amount: (optional number) The amount to regen every second.
 	enable: (required boolean) true to enable state regen; false to disable
 	state: (required) The state to regen: all, health, stamina, or exhaust.
+	amount: (optional number) The amount to regen every second.
 
 [b]Examples:[/b]
 	Adds 1 to all states every second.:
@@ -627,8 +627,8 @@ Finds all of the skills that match the given token.
 Sets one of the player's skills to the given level.
 
 [b]Arguments:[/b]
-	level: (required number) The desired level for the given skill (max 20).
 	skill: (required) The skill name, full or partial, or ID. Use cheat_find_skills to list all skills.
+	level: (required number) The desired level for the given skill (max 20).
 
 [b]Examples:[/b]
 	Set player's lockpicking skill to level 20:
@@ -686,8 +686,8 @@ A high ratio, like 1000, is faster. Default is 15. 0 will pause time.
 Finds and kills all the killable NPCs within the given radius of the player.
 
 [b]Arguments:[/b]
-	radius: (optional number) The kill radius around player. Default 5.
 	token: (required) All or part of a the NPC's name.
+	radius: (optional number) The kill radius around player. Default 5.
 
 [b]Examples:[/b]
 	Kill Father Godwin:
@@ -715,12 +715,12 @@ This only works if the NPC has been loaded into the world.
 Teleports one or more NPCs to the given coordinates. Use cheat_loc to get locations.
 
 [b]Arguments:[/b]
-	max: (optional number) The maximum NPCs to teleport. Default 10.
-	radius: (optional number) The teleport radius around the x,y,z target. Default 5.
-	z: (required number) Z coordinate.
 	y: (required number) Y coordinate.
 	x: (required number) X coordinate.
 	token: (required) All or part of a the NPC's name.
+	z: (required number) Z coordinate.
+	max: (optional number) The maximum NPCs to teleport. Default 10.
+	radius: (optional number) The teleport radius around the x,y,z target. Default 5.
 
 [b]Examples:[/b]
 	Teleport Father Godwin to somewhere...:
@@ -732,8 +732,8 @@ Teleports one or more NPCs to the given coordinates. Use cheat_loc to get locati
 Teleports one or more NPCs to the player's location.
 
 [b]Arguments:[/b]
-	radius: (optional number) The teleport radius around the player. Default 5.
 	max: (optional number) The maximum NPCs to teleport. Default 10.
+	radius: (optional number) The teleport radius around the player. Default 5.
 	token: (required) All or part of a the NPC's name.
 
 [b]Examples:[/b]
@@ -754,13 +754,13 @@ Kills the entity targeted using by F4 or the cheat_target_entity command.
  
 [size=4][b]cheat_spawn[/b][/size]
 Spawns bandits, cuman, or animals.
-For some reason most of the animals and some bandits/cuman just stand around. No idea why.
+If npc is'n moving it has some missing parameters. See Tables.pak\rpg\soul2role.xml,v_soul2role_metarole.xml,soul2hobby.xml,... .
 The spawned entities are not managed so you should kill them off or load a clean save.
 
 [b]Arguments:[/b]
-	radius: (optional number) The spawn radius around the player. Default 5.
 	class: (required) bandit|cuman|hare|horse|boar|sheep|pig|cow|buck|doe|reddeer
 	count: (optional number) Number of things to spawn. Default 1.
+	radius: (optional number) The spawn radius around the player. Default 5.
 
 [b]Examples:[/b]
 	Spawn 10 bandits:
@@ -774,20 +774,23 @@ This is intended to be used to spawn specific NPCs.
 The list of souls is in v_soul_character_data.xml in tables.pak.
 
 [b]Arguments:[/b]
-	token: (required) The sould ID, all/part of the soul name, or all/part of localized soul name.
+	count: (optional number) Number of NPCs to spawn. Default 1.
+	distance: (optional number) Distance(from player) at which NPC will be spawned. Default 1.
+	token: (optional) The sould ID, all/part of the soul name, or all/part of localized soul name.
+	tokens: (optional) The sould ID, all/part of the soul name, or all/part of localized soul name.
 
 [b]Examples:[/b]
-	Spawn Olena by name (spawns 2 NPCs, 1 is invisible):
-	cheat_spawn_npc token:olena
+	The list of souls ids is in soul.xml in tables.pak.:
+	Spawn Olena by name (spawns 2 NPCs, 1 is invisible)
 
-	Spawn all NPCs with 'father' in their name:
-	cheat_spawn_npc token:father
+	cheat_spawn_npc token:olena:
+	Spawn all NPCs with 'father' in their name
 
-	Spawn by soul ID:
-	cheat_spawn_npc token:4d69f4f4-6b78-7b1f-5a61-8fa8045b7aac
+	cheat_spawn_npc token:father:
+	Spawn by soul ID
 
-	Spawn by ui name:
-	cheat_spawn_npc token:char_452_uiName
+	cheat_spawn_npc token:4d69f4f4-6b78-7b1f-5a61-8fa8045b7aac:
+	Spawn by ui name
 
  
  
